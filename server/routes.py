@@ -37,6 +37,9 @@ class ReviewSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Review
 
+@routes.route('/', methods=['GET'])
+def home():
+    return "Welcome to Blog Management System"
 
 # User Routes
 @routes.route('/signup', methods=['POST'])
