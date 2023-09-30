@@ -3,3 +3,8 @@ Flask-SQLAlchemy
 Flask-WTF
 Flask-CORS
 Flask-Login
+marshmallow-sqlalchemy
+flask-marshmallow
+Flask-Session
+
+
