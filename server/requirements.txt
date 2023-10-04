@@ -6,5 +6,7 @@ Flask-Login
 marshmallow-sqlalchemy
 flask-marshmallow
 Flask-Session
+cryptography
+
 
 

@@ -1,14 +1,13 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, make_response, redirect, url_for, render_template
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_wtf import FlaskForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import StringField, PasswordField, validators
-from models import User, BlogPost, Review
-from extensions import ma  # Importing ma from extensions.py
+from models import User, BlogPost, Review, db
+from extensions import ma, login_manager
 
 routes = Blueprint('routes', __name__)
 
-# Setup Flask-WTF Forms
 class UserForm(FlaskForm):
     username = StringField('Username', [validators.Length(min=4, max=25), validators.DataRequired()])
     password = PasswordField('Password', [validators.DataRequired()])
@@ -21,78 +20,86 @@ class ReviewForm(FlaskForm):
     content = StringField('Content', [validators.DataRequired()])
     blogpost_id = StringField('BlogPost ID', [validators.DataRequired()])
 
-
-# Setup Marshmallow Schemas
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
-
 
 class BlogPostSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = BlogPost
 
-
 class ReviewSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Review
 
+@routes.after_request
+def apply_caching(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    if 'Set-Cookie' in response.headers:
+        response.headers['Set-Cookie'] = response.headers['Set-Cookie'] + '; Secure'
+    return response
+
 @routes.route('/', methods=['GET'])
 def home():
-    return "Welcome to Blog Management System"
+    return render_template('index.html')
 
-# User Routes
+# @routes.route('/', methods=['GET'])
+# def home():
+#     return "Welcome to Blog Management System"
+
 @routes.route('/signup', methods=['POST'])
 def signup():
-    from app import ma  
-    form = UserForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-        
-        user = User.query.filter_by(username=username).first()
-        if user:
-            return jsonify({'message': 'Username already exists!'}), 400
-
-        new_user = User(username=username, password=generate_password_hash(password, method='sha256'))
-        db.session.add(new_user)
-        db.session.commit()
-
-        return jsonify({'message': 'User created successfully!'}), 201
-    
-    return jsonify({'message': 'Invalid Input!'}), 400
+    data = request.form if request.form else request.json
+    username = data.get('username')
+    password = data.get('password')
+    if not username or not password:
+        return jsonify({'message': f'Missing value. Username: {username}, Password: {password}'}), 400
+    if len(username) < 4 or len(username) > 25:
+        return jsonify({'message': f'Invalid username length: {len(username)} for username: {username}'}), 400
+    user = User.query.filter_by(username=username).first()
+    if user:
+        return jsonify({'message': 'Username already exists!'}), 400
+    new_user = User(username=username, password=generate_password_hash(password, method='scrypt'))
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({'message': 'User created successfully! Please proceed to login.'}), 201
 
 
-@routes.route('/login', methods=['POST'])
+@routes.route('/login', methods=['GET', 'POST'])  # Add 'GET' method
 def login():
-    form = UserForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-        
-        user = User.query.filter_by(username=username).first()
-        if not user or not check_password_hash(user.password, password):
-            return jsonify({'message': 'Invalid Username or Password!'}), 401
-        
-        login_user(user)
-        return jsonify({'message': 'Logged in successfully!'}), 200
+    if request.method == 'GET':
+        return jsonify({'message': 'Please log in to continue.'}), 200
     
-    return jsonify({'message': 'Invalid Input!'}), 400
+    data = request.get_json(force=True)
+    username = data.get('username')
+    password = data.get('password')
+    user = User.query.filter_by(username=username).first()
+    if not user or not check_password_hash(user.password, password):
+        return jsonify({'message': 'Invalid Username or Password!'}), 401
+    login_user(user)
+    return jsonify({'message': 'Logged in successfully!'}), 200 # Updated this line to send a success message
 
+@routes.route('/dashboard', methods=['GET'])
+@login_required
+def dashboard():
+    user_blogposts = BlogPost.query.filter_by(user_id=current_user.id).all()
+    return render_template('dashboard.html', username=current_user.username, blogposts=user_blogposts)
 
-@routes.route('/logout', methods=['POST'])
+@routes.route('/logout', methods=['POST', 'OPTIONS'])
 @login_required
 def logout():
     logout_user()
-    return jsonify({'message': 'Logged out successfully'}), 200
-
+    return jsonify({'message': 'Logged out successfully!'}), 200
 
 # BlogPost Routes
 @routes.route('/blogposts', methods=['GET'])
+@login_required
 def get_blogposts():
     blogposts = BlogPost.query.all()
     return BlogPostSchema(many=True).jsonify(blogposts), 200
-
 
 @routes.route('/blogposts', methods=['POST'])
 @login_required
@@ -107,9 +114,8 @@ def create_blogpost():
         db.session.commit()
 
         return jsonify({'message': 'BlogPost created successfully!'}), 201
-    
-    return jsonify({'message': 'Invalid Input!'}), 400
 
+    return jsonify({'message': 'Invalid Input!'}), 400
 
 @routes.route('/blogposts/<int:blogpost_id>', methods=['PATCH'])
 @login_required
@@ -124,11 +130,10 @@ def modify_blogpost(blogpost_id):
         blogpost.title = form.title.data
         blogpost.content = form.content.data
         db.session.commit()
-        
-        return jsonify({'message': 'BlogPost updated successfully!'}), 200
-    
-    return jsonify({'message': 'Invalid Input!'}), 400
 
+        return jsonify({'message': 'BlogPost updated successfully!'}), 200
+
+    return jsonify({'message': 'Invalid Input!'}), 400
 
 @routes.route('/blogposts/<int:blogpost_id>', methods=['DELETE'])
 @login_required
@@ -141,7 +146,6 @@ def delete_blogpost(blogpost_id):
     db.session.delete(blogpost)
     db.session.commit()
     return jsonify({'message': 'BlogPost deleted successfully!'}), 200
-
 
 # Review Routes
 @routes.route('/reviews', methods=['POST'])
@@ -157,9 +161,8 @@ def create_review():
         db.session.commit()
 
         return jsonify({'message': 'Review created successfully!'}), 201
-    
-    return jsonify({'message': 'Invalid Input!'}), 400
 
+    return jsonify({'message': 'Invalid Input!'}), 400
 
 @routes.route('/reviews/<int:review_id>', methods=['PATCH'])
 @login_required
@@ -173,11 +176,10 @@ def modify_review(review_id):
         
         review.content = form.content.data
         db.session.commit()
-        
-        return jsonify({'message': 'Review updated successfully!'}), 200
-    
-    return jsonify({'message': 'Invalid Input!'}), 400
 
+        return jsonify({'message': 'Review updated successfully!'}), 200
+
+    return jsonify({'message': 'Invalid Input!'}), 400
 
 @routes.route('/reviews/<int:review_id>', methods=['DELETE'])
 @login_required
@@ -190,11 +192,3 @@ def delete_review(review_id):
     db.session.delete(review)
     db.session.commit()
     return jsonify({'message': 'Review deleted successfully!'}), 200
-
-
-
-# # Register Blueprint
-# app.register_blueprint(routes)
-
-# if __name__ == "__main__":
-#     app.run(debug=True)

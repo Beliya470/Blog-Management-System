@@ -16,7 +16,7 @@ class BlogPost(db.Model):
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.String(1000), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    reviews = db.relationship('Review', backref='blog_post', lazy=True)  # Changed backref to 'blog_post'
+    reviews = db.relationship('Review', backref='blogpost', lazy=True)  # Changed backref to 'blogpost' to match the class name
     
     def __repr__(self):
         return f'<BlogPost {self.title}>'
@@ -25,7 +25,7 @@ class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(500), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    blogpost_id = db.Column(db.Integer, db.ForeignKey('blog_post.id'), nullable=False)  # Fixed the ForeignKey reference
+    blogpost_id = db.Column(db.Integer, db.ForeignKey('blog_post.id'), nullable=False)  # Fixed the ForeignKey reference to 'blog_post.id' to match the table name
     
     def __repr__(self):
         return f'<Review {self.id}>'

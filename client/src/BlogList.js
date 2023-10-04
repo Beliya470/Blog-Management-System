@@ -1,37 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { getBlogPosts } from './apiService';
 
-const BlogList = () => {
-  const [blogPosts, setBlogPosts] = useState([]);
+function BlogList() {
+  const [posts, setPosts] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchBlogPosts = async () => {
+    const fetchPosts = async () => {
       try {
-        const posts = await getBlogPosts();
-        console.log(posts); // log the posts to debug the API response
-        if(Array.isArray(posts)) { // check if posts is an array
-          setBlogPosts(posts);
+        const data = await getBlogPosts();
+        if (Array.isArray(data)) {
+          setPosts(data);
         } else {
-          console.error('API response is not an array:', posts);
+          setError("Unexpected data structure received");
         }
-      } catch (err) {
-        console.error('Error fetching blog posts:', err);
+      } catch (error) {
+        setError("An error occurred while fetching posts");
       }
     };
-
-    fetchBlogPosts();
+    fetchPosts();
   }, []);
 
   return (
     <div>
-      {Array.isArray(blogPosts) && blogPosts.map((post) => (
-        <div className="blogPost" key={post.id}>
-          <h3>{post.title}</h3>
+      {Array.isArray(posts) && posts.map(post => (
+        <div key={post.id}>
+          <h2>{post.title}</h2>
           <p>{post.content}</p>
         </div>
       ))}
+      {error && <p>{error}</p>}
     </div>
   );
-};
+}
 
 export default BlogList;
