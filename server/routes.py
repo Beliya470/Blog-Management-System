@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, make_response, redirect, url_for, render_template
+# from flask import Flask, render_template, jsonify, request, redirect, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_wtf import FlaskForm
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -103,7 +104,7 @@ def get_blogposts():
         return BlogPostSchema(many=True).jsonify(blogposts), 200
     else:
         return jsonify([]), 200
-        
+
 @routes.route('/blogposts', methods=['POST'])
 @login_required
 def create_blogpost():

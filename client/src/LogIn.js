@@ -5,16 +5,15 @@ import * as apiService from "./apiService";
 const LogIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       const response = await apiService.login(username, password);
-      
       if (response && response.message === "Logged in successfully!") {
         localStorage.setItem("token", response.token);
-        navigate("/dashboard", { replace: true });  // Forcefully redirect to the dashboard
+        navigate("/dashboard");  // Redirect to dashboard if logged in
       } else {
         alert("Login failed. Please check your credentials.");
       }

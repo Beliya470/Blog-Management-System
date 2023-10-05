@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as apiService from "./apiService";
+import './Dashboard.css'; // Importing the CSS file
 
 const Dashboard = () => {
     const [title, setTitle] = useState("");
@@ -33,19 +34,21 @@ const Dashboard = () => {
     };
 
     return (
-        <div>
+        <div className="dashboard-container">
             <h1>Dashboard</h1>
+            <img src="/path/to/image1.jpg" alt="Placeholder Image 1" className="dashboard-image"/> {/* Placeholder image */}
             <p>Welcome to your dashboard. Here you can manage your blog posts and view statistics.</p>
-            <div>
+            <img src="/path/to/image2.jpg" alt="Placeholder Image 2" className="dashboard-image"/> {/* Placeholder image */}
+            <div className="post-form">
                 <input type="text" placeholder="Title" onChange={(e) => setTitle(e.target.value)} />
                 <textarea placeholder="Content" onChange={(e) => setContent(e.target.value)}></textarea>
                 <input type="file" onChange={(e) => setImage(e.target.files[0])} />
                 <button onClick={handlePostCreate}>Create Post</button>
             </div>
-            <div>
+            <div className="blog-posts">
                 <h2>Your Blog Posts</h2>
                 {Array.isArray(blogPosts) && blogPosts.map(post => (
-                    <div key={post.id}>
+                    <div key={post.id} className="post-item">
                         <h3>{post.title}</h3>
                         <img src={`/uploads/${post.image_file}`} alt={post.title} />
                         <p>{post.content}</p>
