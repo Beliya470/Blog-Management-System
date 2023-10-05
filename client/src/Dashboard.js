@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as apiService from "./apiService";
 import './Dashboard.css'; // Importing the CSS file
 
@@ -7,6 +8,8 @@ const Dashboard = () => {
     const [content, setContent] = useState("");
     const [image, setImage] = useState(null);
     const [blogPosts, setBlogPosts] = useState([]);
+    const navigate = useNavigate();  // Navigation logic for protection
+    const location = useLocation();  // Navigation logic for protection
 
     useEffect(() => {
         const fetchBlogPosts = async () => {
@@ -19,6 +22,12 @@ const Dashboard = () => {
         };
         fetchBlogPosts();
     }, []);
+
+    useEffect(() => {  // Added this useEffect for navigation protection
+        if (!localStorage.getItem("token") && location.pathname === "/dashboard") {
+            navigate("/login");
+        }
+    }, [location, navigate]);
 
     const handlePostCreate = async () => {
         const formData = new FormData();

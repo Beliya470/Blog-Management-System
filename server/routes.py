@@ -6,7 +6,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import StringField, PasswordField, validators
 from models import User, BlogPost, Review, db
 from extensions import ma, login_manager
+import jwt
+from datetime import datetime, timedelta
 
+SECRET_KEY = 'your_secret_key'  # You should store this securely, not in the code.
+
+def generate_token_for_user(user):
+    """ Generate a JWT token for the user """
+    expiration = datetime.utcnow() + timedelta(hours=1)  # Token valid for 1 hour
+    token = jwt.encode({
+        'user_id': user.id,
+        'exp': expiration
+    }, SECRET_KEY, algorithm='HS256')
+    return token
 routes = Blueprint('routes', __name__)
 
 class UserForm(FlaskForm):
@@ -69,19 +81,20 @@ def signup():
     return jsonify({'message': 'User created successfully! Please proceed to login.'}), 201
 
 
-@routes.route('/login', methods=['GET', 'POST'])  # Add 'GET' method
+@routes.route('/login', methods=['POST'])
 def login():
-    if request.method == 'GET':
-        return jsonify({'message': 'Please log in to continue.'}), 200
-    
     data = request.get_json(force=True)
     username = data.get('username')
     password = data.get('password')
     user = User.query.filter_by(username=username).first()
+
     if not user or not check_password_hash(user.password, password):
-        return jsonify({'message': 'Invalid Username or Password!'}), 401
-    login_user(user)
-    return jsonify({'message': 'Logged in successfully!'}), 200 # Updated this line to send a success message
+        return jsonify({'status': 'error', 'message': 'Invalid Username or Password!'}), 401
+
+    # Assuming you have a function to generate tokens.
+    token = generate_token_for_user(user)
+
+    return jsonify({'status': 'success', 'message': 'Logged in successfully!', 'token': token}), 200
 
 @routes.route('/dashboard', methods=['GET'])
 @login_required

@@ -1,19 +1,19 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import * as apiService from "./apiService";
+import "./LogIn.css";
 
 const LogIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  
-  const navigate = useNavigate();
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const handleLogin = async () => {
     try {
       const response = await apiService.login(username, password);
       if (response && response.message === "Logged in successfully!") {
         localStorage.setItem("token", response.token);
-        navigate("/dashboard");  // Redirect to dashboard if logged in
+        setLoggedIn(true);
       } else {
         alert("Login failed. Please check your credentials.");
       }
@@ -23,8 +23,13 @@ const LogIn = () => {
     }
   };
 
+  if (loggedIn) {
+    return <Navigate to="/dashboard" />;
+  }
+
   return (
-    <div>
+    <div className="login-container">
+      <h2>Login to Your Account</h2>
       <input 
         type="text" 
         placeholder="Username" 
