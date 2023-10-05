@@ -98,32 +98,43 @@ export const login = async (username, password) => {
 
 export const logout = async () => {
   try {
-      const response = await fetch(`${baseURL}/logout`, { method: 'POST' });
+    const response = await fetch(`${baseURL}/logout`, { method: 'POST' });
 
-      // Check if the response was not okay
-      if (!response.ok) {
-          // Try to parse the response body to get the server's error message
-          let errMsg = 'Invalid response from server.';
-          try {
-              const data = await response.json();
-              errMsg = data.message || errMsg;
-          } catch (e) {}
-
-          throw new Error(errMsg);
-      }
-
+    if (!response.ok) {
+      let errMsg = 'Invalid response from server.';
       try {
-          return await response.json();
-      } catch (e) {
-          return { message: 'Logged out successfully!' };  // Default success message
-      }
+          const data = await response.json();
+          errMsg = data.message || errMsg;
+      } catch (e) {}
+
+      throw new Error(errMsg);
+    }
+
+    try {
+        return await response.json();
+    } catch (e) {
+        return { message: 'Logged out successfully!' };
+    }
   } catch (error) {
-      console.error("Error during logout", error);
-      throw error;
+    console.error("Error during logout", error);
+    throw error;
   }
 };
 
-
+// User Blog Post API
+export const getUserBlogPosts = async () => {
+    try {
+        const response = await fetch('/blogposts', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Failed to fetch user's blog posts:", error);
+    }
+};
 
 // Review API
 export const createReview = async (blogId, title, content) => {

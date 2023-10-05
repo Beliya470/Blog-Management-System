@@ -23,7 +23,6 @@ function Navbar() {
       onMouseOut={e => e.target.style.background = "#ffffff33"}>
         Home
       </Link>
-      {/* Repeat similar Link styling for other links */}
       <Link to="/signup" style={{
         textDecoration: 'none',
         padding: '8px 12px',
@@ -48,6 +47,18 @@ function Navbar() {
       onMouseOut={e => e.target.style.background = "#ffffff33"}>
         Log In
       </Link>
+      <Link to="/dashboard" style={{
+        textDecoration: 'none',
+        padding: '8px 12px',
+        borderRadius: '4px',
+        background: '#ffffff33',
+        color: 'white',
+        transition: 'background 0.3s'
+      }}
+      onMouseOver={e => e.target.style.background = "#ffffff88"}
+      onMouseOut={e => e.target.style.background = "#ffffff33"}>
+        Dashboard
+      </Link>
       <Link to="/logout" style={{
         textDecoration: 'none',
         padding: '8px 12px',
@@ -60,7 +71,7 @@ function Navbar() {
       onMouseOut={e => e.target.style.background = "#ffffff33"}>
         Log Out
       </Link>
-      <Link to="/login" style={{
+      <Link to="/create-blogpost" style={{
         textDecoration: 'none',
         padding: '8px 12px',
         borderRadius: '4px',
@@ -72,6 +83,7 @@ function Navbar() {
       onMouseOut={e => e.target.style.background = "#ffffff33"}>
         Create Blog Post
       </Link>
+      
     </nav>   
   );
 }

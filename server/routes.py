@@ -44,7 +44,7 @@ def apply_caching(response):
 
 @routes.route('/', methods=['GET'])
 def home():
-    return render_template('index.html')
+    return "Welcome to the Blog Management System"
 
 # @routes.route('/', methods=['GET'])
 # def home():
@@ -99,8 +99,11 @@ def logout():
 @login_required
 def get_blogposts():
     blogposts = BlogPost.query.all()
-    return BlogPostSchema(many=True).jsonify(blogposts), 200
-
+    if blogposts:
+        return BlogPostSchema(many=True).jsonify(blogposts), 200
+    else:
+        return jsonify([]), 200
+        
 @routes.route('/blogposts', methods=['POST'])
 @login_required
 def create_blogpost():

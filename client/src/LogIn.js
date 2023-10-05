@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Replaced useHistory with useNavigate
+import { useNavigate } from "react-router-dom";
 import * as apiService from "./apiService";
 
 const LogIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // Using useNavigate instead of useHistory
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -14,13 +13,9 @@ const LogIn = () => {
       const response = await apiService.login(username, password);
       
       if (response && response.message === "Logged in successfully!") {
-        // Storing the token in local storage
         localStorage.setItem("token", response.token);
-
-        // Redirecting to the dashboard using navigate
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true });  // Forcefully redirect to the dashboard
       } else {
-        // Notifying users of unsuccessful login attempts
         alert("Login failed. Please check your credentials.");
       }
     } catch (error) {

@@ -1,33 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import * as apiService from './apiService';
+import React, { useState, useEffect } from "react";
+import * as apiService from "./apiService";
 
-function Dashboard() {
-  const [posts, setPosts] = useState([]);
+const Dashboard = () => {
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
+    const [image, setImage] = useState(null);
+    const [blogPosts, setBlogPosts] = useState([]);
 
-  useEffect(() => {
-    // Fetch the user's posts (or whatever data you want to display in the dashboard)
-    async function fetchData() {
-      try {
-        const data = await apiService.getBlogPosts(); // Assuming this fetches the user's posts
-        setPosts(data);
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      }
-    }
+    useEffect(() => {
+        const fetchBlogPosts = async () => {
+            const data = await apiService.getUserBlogPosts();
+            if (Array.isArray(data)) {
+                setBlogPosts(data);
+            } else {
+                console.error("Fetched blog posts data is not an array:", data);
+            }
+        };
+        fetchBlogPosts();
+    }, []);
 
-    fetchData();
-  }, []);
+    const handlePostCreate = async () => {
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('content', content);
+        formData.append('image', image);
+        const response = await apiService.createBlogPost(formData);
+        if (response.success) {
+            setBlogPosts(prevPosts => [...prevPosts, response.blogPost]);
+        } else {
+            console.error('Failed to create the blog post');
+        }
+    };
 
-  return (
-    <div>
-      <h2>Dashboard</h2>
-      <ul>
-        {posts.map(post => (
-          <li key={post.id}>{post.title}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+    return (
+        <div>
+            <h1>Dashboard</h1>
+            <p>Welcome to your dashboard. Here you can manage your blog posts and view statistics.</p>
+            <div>
+                <input type="text" placeholder="Title" onChange={(e) => setTitle(e.target.value)} />
+                <textarea placeholder="Content" onChange={(e) => setContent(e.target.value)}></textarea>
+                <input type="file" onChange={(e) => setImage(e.target.files[0])} />
+                <button onClick={handlePostCreate}>Create Post</button>
+            </div>
+            <div>
+                <h2>Your Blog Posts</h2>
+                {Array.isArray(blogPosts) && blogPosts.map(post => (
+                    <div key={post.id}>
+                        <h3>{post.title}</h3>
+                        <img src={`/uploads/${post.image_file}`} alt={post.title} />
+                        <p>{post.content}</p>
+                        {/* Add edit, delete buttons, and review sections here */}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
 
 export default Dashboard;
