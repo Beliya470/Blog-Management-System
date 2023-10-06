@@ -20,6 +20,14 @@ class BlogPost(db.Model):
     
     def __repr__(self):
         return f'<BlogPost {self.title}>'
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "content": self.content
+        }
+
 
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,3 +37,11 @@ class Review(db.Model):
     
     def __repr__(self):
         return f'<Review {self.id}>'
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "content": self.content,
+            "user_id": self.user_id,
+            "blogpost_id": self.blogpost_id
+        }

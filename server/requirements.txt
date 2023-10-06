@@ -1,6 +1,7 @@
 Flask
 Flask-SQLAlchemy
 Flask-WTF
+WTForms
 Flask-CORS
 Flask-Login
 marshmallow-sqlalchemy
@@ -8,6 +9,9 @@ flask-marshmallow
 Flask-Session
 cryptography
 pyjwt
+Werkzeug
+express-jwt
+
 
 
 

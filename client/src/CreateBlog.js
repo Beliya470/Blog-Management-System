@@ -1,19 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createBlogPost } from './apiService';
 
 const CreateBlog = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [error, setError] = useState('');
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        setAuthenticated(true);
+      } else {
+        setAuthenticated(false);
+      }
+    };
+
+    checkAuthentication();
+  }, []);
 
   const handleCreateBlogPost = async () => {
+    if (!authenticated) {
+      setError('Please log in to create a blog post.');
+      return;
+    }
+  
     try {
-      await createBlogPost(title, content);
-      // Handle successful blog post creation (e.g., redirect to blog list)
+      const result = await createBlogPost(title, content);
+      if (result.message === 'BlogPost created successfully!') {
+        // Display a success message
+        setSuccessMessage(result.message);
+  
+        // Clear the form fields
+        setTitle('');
+        setContent('');
+  
+        // You can also update the list of blog posts here
+        // Fetch the updated list of blog posts and update the state
+        const updatedBlogPosts = await apiService.getBlogPosts();
+        setBlogPosts(updatedBlogPosts);
+      } else {
+        setError('Failed to create the blog post.');
+      }
     } catch (err) {
-      setError('Invalid Input!');
+      setError('Failed to create the blog post.');
     }
   };
+  
 
   return (
     <div>

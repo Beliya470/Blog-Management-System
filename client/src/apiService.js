@@ -1,4 +1,8 @@
-const baseURL = "http://localhost:5000";
+const baseURL = "http://localhost:5000/routes";
+
+const defaultHeaders = () => ({
+  'Authorization': `Bearer ${localStorage.getItem('token')}`
+});
 
 const encodeFormData = (data) => {
   return Object.keys(data)
@@ -9,60 +13,59 @@ const encodeFormData = (data) => {
 // Blog API
 export const getBlogPosts = async () => {
   try {
-    const response = await fetch(`${baseURL}/blogposts`);
+    const response = await fetch(`${baseURL}/routes/blogposts`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return response.json();
   } catch (error) {
-    console.error("Error fetching blogs", error);
-    throw error;
-  }
-};
-
-export const createBlogPost = async (title, content) => {
-  try {
-    const response = await fetch(`${baseURL}/blogposts`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, content })
-    });
-    return response.json();
-  } catch (error) {
-    console.error("Error creating blog", error);
+    console.error("Error fetching blog posts:", error);
     throw error;
   }
 };
 
 export const getBlogPost = async (blogId) => {
   try {
-    const response = await fetch(`${baseURL}/blogposts/${blogId}`);
+    const response = await fetch(`${baseURL}/routes/blogposts/${blogId}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return response.json();
   } catch (error) {
-    console.error("Error fetching blog", error);
+    console.error("Error fetching blog post:", error);
     throw error;
   }
 };
 
 export const modifyBlogPost = async (blogId, title, content) => {
   try {
-    const response = await fetch(`${baseURL}/blogposts/${blogId}`, {
+    const response = await fetch(`${baseURL}/routes/blogposts/${blogId}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...defaultHeaders() },
       body: JSON.stringify({ title, content })
     });
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return response.json();
   } catch (error) {
-    console.error("Error updating blog", error);
+    console.error("Error modifying blog post:", error);
     throw error;
   }
 };
 
 export const deleteBlogPost = async (blogId) => {
   try {
-    const response = await fetch(`${baseURL}/blogposts/${blogId}`, {
+    const response = await fetch(`${baseURL}/routes/blogposts/${blogId}`, {
       method: 'DELETE',
+      headers: defaultHeaders()
     });
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return response.json();
   } catch (error) {
-    console.error("Error deleting blog", error);
+    console.error("Error deleting blog post:", error);
     throw error;
   }
 };
@@ -70,93 +73,128 @@ export const deleteBlogPost = async (blogId) => {
 // Auth API
 export const signUp = async (username, password) => {
   try {
-    const response = await fetch(`${baseURL}/signup`, {
+    const response = await fetch(`${baseURL}/routes/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encodeFormData({ username, password })
     });
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return response.json();
   } catch (error) {
-    console.error("Error during sign up", error);
+    console.error("Error signing up:", error);
     throw error;
   }
 };
 
 export const login = async (username, password) => {
   try {
-    const response = await fetch(`${baseURL}/login`, {
+    const response = await fetch(`${baseURL}/routes/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return response.json();
   } catch (error) {
-    console.error("Error during login", error);
+    console.error("Error logging in:", error);
     throw error;
   }
 };
 
 export const logout = async () => {
   try {
-    const response = await fetch(`${baseURL}/logout`, { method: 'POST' });
-
+    const response = await fetch(`${baseURL}/routes/logout`, { 
+      method: 'POST', 
+      headers: defaultHeaders() 
+    });
     if (!response.ok) {
-      let errMsg = 'Invalid response from server.';
-      try {
-          const data = await response.json();
-          errMsg = data.message || errMsg;
-      } catch (e) {}
-
-      throw new Error(errMsg);
+      const data = await response.json();
+      throw new Error(data.message || 'Invalid response from server.');
     }
-
-    try {
-        return await response.json();
-    } catch (e) {
-        return { message: 'Logged out successfully!' };
-    }
+    return response.json();
   } catch (error) {
-    console.error("Error during logout", error);
+    console.error("Error logging out:", error);
     throw error;
   }
 };
 
-// User Blog Post API
-export const getUserBlogPosts = async () => {
-    try {
-        const response = await fetch('/blogposts', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Failed to fetch user's blog posts:", error);
+export const createBlogPost = async (formData) => {
+  try {
+    const response = await fetch(`${baseURL}/routes/blogposts`, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        ...defaultHeaders(),
+        // Do not explicitly set 'Content-Type' here; 
+        // let the browser set it with the proper boundary for FormData
+      }
+      
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to create blog post (HTTP ${response.status})`);
     }
+    return response.json();
+  } catch (error) {
+    console.error("Error creating blog post:", error);
+    throw error;
+  }
+};
+
+
+
+
+export const getUserBlogPosts = async () => {
+  try {
+    const response = await fetch(`${baseURL}/routes/blogposts`, {
+      headers: defaultHeaders()
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching user blog posts:", error);
+    throw error;
+  }
 };
 
 // Review API
-export const createReview = async (blogId, title, content) => {
+export const createReview = async (blogId, reviewText) => {
   try {
     const response = await fetch(`${baseURL}/blogposts/${blogId}/reviews`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, content })
+      headers: {
+        ...defaultHeaders(),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ text: reviewText })  // assuming your backend expects the key to be "text"
     });
+    if (!response.ok) {
+      throw new Error(`Failed to create review (HTTP ${response.status})`);
+    }
     return response.json();
   } catch (error) {
-    console.error("Error creating review", error);
+    console.error("Error creating review:", error);
     throw error;
   }
 };
 
+
 export const getReviews = async (blogId) => {
   try {
-    const response = await fetch(`${baseURL}/blogposts/${blogId}/reviews`);
+    const response = await fetch(`${baseURL}/blogposts/${blogId}/reviews`, {
+      headers: defaultHeaders()
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return response.json();
   } catch (error) {
-    console.error("Error fetching reviews", error);
+    console.error("Error fetching reviews:", error);
     throw error;
   }
 };
