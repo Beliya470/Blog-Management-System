@@ -69,7 +69,7 @@ const Dashboard = () => {
                 setTitle("");
                 setContent("");
                 setImage(null);
-                setSuccessMessage("Blog post created successfully!");
+                setSuccessMessage("");
             } else {
                 console.error('Failed to create the blog post');
             }
