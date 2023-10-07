@@ -11,6 +11,10 @@ cryptography
 pyjwt
 Werkzeug
 express-jwt
+Jinja2
+Faker
+Flask-Session
+flask-socket eventlet
 
 
 
