@@ -29,15 +29,14 @@ const CreateBlog = () => {
     try {
       const result = await createBlogPost(title, content);
       if (result.message === 'BlogPost created successfully!') {
-        // Display a success message
+        
         setSuccessMessage(result.message);
   
-        // Clear the form fields
+        
         setTitle('');
         setContent('');
   
-        // You can also update the list of blog posts here
-        // Fetch the updated list of blog posts and update the state
+        
         const updatedBlogPosts = await apiService.getBlogPosts();
         setBlogPosts(updatedBlogPosts);
       } else {

@@ -13,7 +13,7 @@ const EditBlog = ({ blogPostId }) => {
         setTitle(response.data.title);
         setContent(response.data.content);
       } catch (err) {
-        // Handle error during fetching blog post
+        
       }
     };
 
@@ -23,7 +23,7 @@ const EditBlog = ({ blogPostId }) => {
   const handleModifyBlogPost = async () => {
     try {
       await modifyBlogPost(blogPostId, title, content);
-      // Handle successful blog post modification (e.g., redirect to blog list)
+      
     } catch (err) {
       setError('Invalid Input!');
     }

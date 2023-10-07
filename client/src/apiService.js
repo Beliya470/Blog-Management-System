@@ -112,8 +112,13 @@ export const logout = async () => {
       headers: defaultHeaders() 
     });
     if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.message || 'Invalid response from server.');
+      const text = await response.text();
+      try {
+        const data = JSON.parse(text);
+        throw new Error(data.message || 'Invalid response from server.');
+      } catch {
+        throw new Error(text || 'Invalid response from server.');
+      }
     }
     return response.json();
   } catch (error) {
@@ -121,6 +126,7 @@ export const logout = async () => {
     throw error;
   }
 };
+
 
 export const createBlogPost = async (formData) => {
   try {

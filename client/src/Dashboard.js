@@ -5,12 +5,12 @@ import './Dashboard.css';
 
 const Dashboard = () => {
 
-    // 1. State hook definitions
+    
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [image, setImage] = useState(null);
     const [blogPosts, setBlogPosts] = useState([]);
-    // const [reviewText, setReviewText] = useState("");
+    
     const [reviewTexts, setReviewTexts] = useState({});
 
     const [reviews, setReviews] = useState([]);
@@ -18,7 +18,7 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // 2. fetchBlogPosts function
+    
     const fetchBlogPosts = async () => {
         try {
             const data = await apiService.getBlogPosts();
@@ -28,7 +28,7 @@ const Dashboard = () => {
         }
     };
 
-    // 3. useEffect hooks
+    
     useEffect(() => {
         fetchBlogPosts();
     }, []);    
@@ -45,13 +45,11 @@ const Dashboard = () => {
 
     const handlePostCreate = async () => {
         const formData = new FormData();
-        // console.log("Title:", title);
-        // console.log("Content:", content);
+        
         formData.append('title', title.toString());
         formData.append('content', content.toString());
 
-        // formData.append('title', title);
-        // formData.append('content', content);
+        
         formData.append('image', image);
     
         for (var pair of formData.entries()) {
@@ -62,10 +60,10 @@ const Dashboard = () => {
             const response = await apiService.createBlogPost(formData);
             console.log("Newly created blog post:", response.blogPost);
             if (response.success) {
-                // Blog post created successfully, update the state
+                
                 fetchBlogPosts();
 
-                // setBlogPosts(prevPosts => [...prevPosts, response.blogPost]);
+                
                 setTitle("");
                 setContent("");
                 setImage(null);
@@ -81,7 +79,7 @@ const Dashboard = () => {
     const handleDeletePost = async (blogId) => {
         try {
             await apiService.deleteBlogPost(blogId);
-            // Blog post deleted successfully, update the state
+            
             setBlogPosts(prevPosts => prevPosts.filter(post => post.id !== blogId));
         } catch (error) {
             console.error("Failed to delete post:", error);
@@ -92,11 +90,11 @@ const Dashboard = () => {
         try {
             const response = await apiService.createReview(blogId, reviewText);
             if (response.success) {
-                // Review created successfully, update the state
+                
                 setReviews(prevReviews => [...prevReviews, response.review]);
                 setReviewTexts(prev => ({ ...prev, [blogId]: '' }));
                 
-                // Fetch the blog posts again to update them with new reviews
+                
                 fetchBlogPosts();
             } else {
                 console.error('Failed to create the review');
@@ -106,11 +104,11 @@ const Dashboard = () => {
         }
     };
     
-    const handleLogout = async () => {
+    const handleLogOut = async () => {
         try {
             const response = await apiService.logout();
             if (response.success) {
-                navigate("/login");  // Redirect to home page
+                navigate("/login");  
             } else {
                 console.error('Failed to logout');
             }
@@ -145,17 +143,17 @@ const Dashboard = () => {
                 <h2>Your Blog Posts</h2>
                 {blogPosts.filter(Boolean).map(post => (
 
-                // {blogPosts && blogPosts.map(post => (
+                
                     <div key={post.id} className="post-item">
                         <h3>{post.title}</h3>
-                        {/* Display other details of the blog post as needed */}
+                        
                         <img src={`/uploads/${post?.image_file}`} alt={post?.title} />
                         <p>{post?.content}</p>
                         <button onClick={() => handleDeletePost(post.id)}>Delete</button>
                         <div>
                             <textarea
                                 placeholder="Leave a review..."
-                                // value={reviewText}
+                                
                                 value={reviewTexts[post.id] || ""}
                                 onChange={(e) => setReviewTexts(prev => ({ ...prev, [post.id]: e.target.value }))}
                             />

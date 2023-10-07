@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logout } from './apiService';
+import * as apiService from "./apiService";
+
 
 const LogOut = () => {
   const navigate = useNavigate();
@@ -8,17 +9,19 @@ const LogOut = () => {
   useEffect(() => {
     const handleLogout = async () => {
       try {
-        await logout();
-        navigate('/login');
+        await LogOut();
+        localStorage.removeItem("token"); 
+        navigate('/'); 
       } catch (err) {
         console.error("Error during logout", err);
-        // Handle error during logout, maybe show a message to the user.
+        navigate('/login'); 
       }
     };
+
     handleLogout();
   }, [navigate]);
 
-  return null;  // This component does not render anything visible to the user
+  return null; 
 };
 
 export default LogOut;

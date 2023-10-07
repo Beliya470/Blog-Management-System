@@ -126,6 +126,15 @@ def logout():
     logout_user()
     return jsonify({'message': 'Logged out successfully!'}), 200
 
+
+@routes.route('/routes/logout', methods=['OPTIONS'])
+def logout_options():
+    response = make_response()
+    response.headers['Access-Control-Allow-Origin'] = '*'  # Adjust this as per your requirements
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+    response.headers['Access-Control-Allow-Methods'] = 'POST,OPTIONS'
+    return response
+
 # BlogPost Routes
 @routes.route('/routes/blogposts', methods=['GET'])
 def get_blogposts():

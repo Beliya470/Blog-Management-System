@@ -59,10 +59,10 @@ body {
 
 .main-content img {
   width: 100%;
-  height: auto; /* This will maintain the aspect ratio */
+  height: auto; 
   clip-path: polygon(0 0, 100% 0, 100% 80%, 0% 100%);
-  object-fit: cover; /* This will ensure the image covers the space without distortion */
-  max-height: 200px; /* Adjust this value to your desired height */
+  object-fit: cover; 
+  max-height: 200px; 
 }
 
 
@@ -101,10 +101,10 @@ body {
 }
 
 .post img {
-  width: 400px; /* Set equal width */
-  height: 150px; /* Set equal height */
+  width: 400px; 
+  height: 150px; 
   object-fit: cover;
-  clip-path: none; /* Ensure there's no tilt */
+  clip-path: none; 
 }
 
 .post h3 {
@@ -115,7 +115,7 @@ body {
 .post p {
   padding: 15px;
   background-color: #f4f4f4;
-  color: blue; /* Set "Read More" text to blue */
+  color: blue; 
 }
 
 
@@ -140,7 +140,7 @@ body {
 }
 
 .social-icons img {
-  width: 40px; /* reduced size */
+  width: 40px; 
   transition: transform 0.3s;
 }
 

@@ -8,7 +8,7 @@ const CreateReview = ({ blogPostId }) => {
   const handleCreateReview = async () => {
     try {
       await createReview(blogPostId, content);
-      // Handle successful review creation (e.g., clear the form or redirect)
+      
     } catch (err) {
       setError('Invalid Input!');
     }

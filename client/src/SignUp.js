@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signUp } from './apiService';
-import './SignUp.css'; // Ensure this path is correct and the file contains your styles
+import './SignUp.css'; 
 
 function SignUp() {
     const [username, setUsername] = useState('');
@@ -10,6 +10,14 @@ function SignUp() {
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (successMessage) {
+            setTimeout(() => {
+                navigate('/login');
+            }, 1000);
+        }
+    }, [successMessage, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,9 +31,6 @@ function SignUp() {
             const res = await signUp(username, password);
             if (res.status === 201) {
                 setSuccessMessage('User created successfully! Please proceed to login.');
-                setTimeout(() => {
-                    navigate('/login');
-                }, 5000); 
             } else {
                 setErrorMessage(res.message || 'Error during sign up. Please try again.');
             }
