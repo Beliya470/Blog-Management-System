@@ -23,6 +23,8 @@ def generate_token_for_user(user):
     }, SECRET_KEY, algorithm='HS256')
     return token
 
+DEFAULT_USER_ID = 0
+
 # 3. Set Flask-Login configurations
 @login_manager.user_loader
 def load_user(user_id):
@@ -75,9 +77,7 @@ def apply_caching(response):
 def home():
     return "Welcome to the Blog Management System"
 
-# @routes.route('/', methods=['GET'])
-# def home():
-#     return "Welcome to Blog Management System"
+
 
 @routes.route('/signup', methods=['POST'])
 def signup():
@@ -223,21 +223,6 @@ def delete_blogpost(blogpost_id):
     return jsonify({'message': 'BlogPost deleted successfully!'}), 200
 
 # Review Routes
-@routes.route('/reviews', methods=['POST'])
-# @login_required
-def create_review():
-    form = ReviewForm()
-    if form.validate_on_submit():
-        content = form.content.data
-        blogpost_id = form.blogpost_id.data
-
-        new_review = Review(content=content, user_id=current_user.id, blogpost_id=blogpost_id)
-        db.session.add(new_review)
-        db.session.commit()
-
-        return jsonify({'message': 'Review created successfully!'}), 201
-
-    return jsonify({'message': 'Invalid Input!'}), 400
 
 @routes.route('/reviews/<int:review_id>', methods=['PATCH'])
 # @login_required
@@ -283,22 +268,29 @@ def get_reviews_for_blogpost(blogpost_id):
 
 # Create a review for a specific blogpost
 @routes.route('/blogposts/<int:blogpost_id>/reviews', methods=['POST'])
-# @login_required
 def add_review_to_blogpost(blogpost_id):
     blogpost = BlogPost.query.get(blogpost_id)
     if not blogpost:
         return jsonify({"message": "BlogPost not found!"}), 404
 
     data = request.json
-    review_text = data.get('text')
+    review_text = data.get('content')
+
+    # review_text = data.get('text')
     if not review_text:
         return jsonify({"message": "Review text is required!"}), 400
 
-    new_review = Review(content=review_text, user_id=current_user.id, blogpost_id=blogpost_id)
+    # Use current user's ID or fallback to the default user ID
+    user_id = getattr(current_user, 'id', DEFAULT_USER_ID)
+
+    new_review = Review(content=review_text, user_id=int(user_id), blogpost_id=int(blogpost_id))
+# new_review = Review(content=review_text, user_id=user_id, blogpost_id=blogpost_id)
     db.session.add(new_review)
     db.session.commit()
 
     return jsonify({"message": "Review added successfully!", "review": ReviewSchema().dump(new_review)}), 201
+
+
 
 
 

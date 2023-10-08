@@ -161,7 +161,9 @@ export const createReview = async (blogId, reviewText) => {
         ...defaultHeaders(),
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ text: reviewText })  // assuming your backend expects the key to be "text"
+      body: JSON.stringify({ content: reviewText })
+
+      // body: JSON.stringify({ text: reviewText })  // assuming your backend expects the key to be "text"
     });
     if (!response.ok) {
       throw new Error(`Failed to create review (HTTP ${response.status})`);

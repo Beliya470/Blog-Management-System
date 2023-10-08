@@ -97,14 +97,25 @@ const Dashboard = () => {
 
     const handleCreateReview = async (blogId, reviewText) => {
         try {
-            const response = await apiService.createReview(blogId, reviewText);
-            if (response.success) {
-                
-                setReviews(prevReviews => [...prevReviews, response.review]);
+            const response = await apiService.createReview(blogId, { content: reviewText });
+    
+            if (response.message === "Review added successfully!") {  // <-- This is the new condition
                 setReviewTexts(prev => ({ ...prev, [blogId]: '' }));
                 
+                // Update the blogPosts state to include the new review for the particular blog post
+                setBlogPosts(prevPosts => {
+                    const updatedPosts = prevPosts.map(post => {
+                        if (post.id === blogId) {
+                            return {
+                                ...post,
+                                reviews: [...post.reviews, response.review]
+                            };
+                        }
+                        return post;
+                    });
+                    return updatedPosts;
+                });
                 
-                fetchBlogPosts();
             } else {
                 console.error('Failed to create the review');
             }
@@ -112,6 +123,8 @@ const Dashboard = () => {
             console.error('Error creating review:', error);
         }
     };
+    
+    
     
     const handleLogOut = async () => {
         try {
@@ -176,7 +189,9 @@ const Dashboard = () => {
                             {post.reviews && post.reviews.map(review => (
                             
                                 <div key={review.id} className="review-item">
-                                    <p>{review?.text || ''}</p>
+                                    <p>{review?.content || ''}</p>
+
+                                
                                     
                                 </div>
                             ))}
