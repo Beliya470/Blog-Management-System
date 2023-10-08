@@ -155,50 +155,33 @@ def get_blogposts():
         
     return jsonify(blogposts_data), 200
 
-
 @routes.route('/blogposts', methods=['POST'])
 # @login_required
 def create_blogpost():
-    try:
-        print(request.form)
-        # Get title and content from form data
-        data = request.json if request.is_json else request.form
-        title = data.get('title')
-        content = data.get('content')
+    data = request.form
+    print("Received data:", data)
+    title = data.get('title')
+    content = data.get('content')
+    image = request.files.get('image')  # Getting the uploaded file. You can process it further if needed.
 
-        # title = request.form.get('title')
-        # content = request.form.get('content')
-        image = request.files.get('image')  # Getting the uploaded file. You can process it further if needed.
+    if not title or not content:
+        return jsonify({'message': 'Title and content are required!'}), 400
 
-        if not title or not content:
-            return jsonify({'message': 'Title and content are required!'}), 400
+    default_user_id = 1  # or fetch the id of a default user from your database
 
-        default_user_id = 1  # or fetch the id of a default user from your database
+    if current_user.is_authenticated:
+        user_id = current_user.id
+    else:
+        user_id = default_user_id
 
-        if current_user.is_authenticated:
-            user_id = current_user.id
-        else:
-            user_id = default_user_id
+    new_blogpost = BlogPost(title=title, content=content, user_id=user_id)
+    
+    db.session.add(new_blogpost)
+    db.session.commit()
 
-        new_blogpost = BlogPost(title=title, content=content, user_id=user_id)
-        
-        db.session.add(new_blogpost)
-        db.session.commit()
-
-        blogposts = BlogPost.query.all()
-        blogposts_data = []
-
-        for post in blogposts:
-            post_data = post.to_dict()
-            post_data['reviews'] = [review.to_dict() for review in post.reviews]
-            blogposts_data.append(post_data)
-
-        # Convert the newly created blog post to a dictionary
-        blogpost_data = BlogPostSchema().dump(new_blogpost)
-        
-        return jsonify({'message': 'BlogPost created successfully!', 'blogPost': blogpost_data, 'success': True}), 201
-    except Exception as e:
-        return jsonify({'message': str(e)}), 500
+    blogpost_data = BlogPostSchema().dump(new_blogpost)
+    
+    return jsonify({'message': 'BlogPost created successfully!', 'blogPost': blogpost_data, 'success': True}), 201
 
 
 @routes.route('/blogposts/<int:blogpost_id>', methods=['GET'])
@@ -241,7 +224,7 @@ def delete_blogpost(blogpost_id):
 
 # Review Routes
 @routes.route('/reviews', methods=['POST'])
-@login_required
+# @login_required
 def create_review():
     form = ReviewForm()
     if form.validate_on_submit():
@@ -257,7 +240,7 @@ def create_review():
     return jsonify({'message': 'Invalid Input!'}), 400
 
 @routes.route('/reviews/<int:review_id>', methods=['PATCH'])
-@login_required
+# @login_required
 def modify_review(review_id):
     form = ReviewForm()
     if form.validate_on_submit():
@@ -274,7 +257,7 @@ def modify_review(review_id):
     return jsonify({'message': 'Invalid Input!'}), 400
 
 @routes.route('/reviews/<int:review_id>', methods=['DELETE'])
-@login_required
+# @login_required
 def delete_review(review_id):
     review = Review.query.get(review_id)
 
@@ -284,6 +267,39 @@ def delete_review(review_id):
     db.session.delete(review)
     db.session.commit()
     return jsonify({'message': 'Review deleted successfully!'}), 200
+
+
+# Get all reviews for a specific blogpost
+@routes.route('/blogposts/<int:blogpost_id>/reviews', methods=['GET'])
+def get_reviews_for_blogpost(blogpost_id):
+    blogpost = BlogPost.query.get(blogpost_id)
+    if not blogpost:
+        return jsonify({"message": "BlogPost not found!"}), 404
+
+    reviews = blogpost.reviews  # Assuming you have a relationship defined in BlogPost for reviews
+    reviews_data = [ReviewSchema().dump(review) for review in reviews]
+    return jsonify(reviews_data), 200
+
+
+# Create a review for a specific blogpost
+@routes.route('/blogposts/<int:blogpost_id>/reviews', methods=['POST'])
+# @login_required
+def add_review_to_blogpost(blogpost_id):
+    blogpost = BlogPost.query.get(blogpost_id)
+    if not blogpost:
+        return jsonify({"message": "BlogPost not found!"}), 404
+
+    data = request.json
+    review_text = data.get('text')
+    if not review_text:
+        return jsonify({"message": "Review text is required!"}), 400
+
+    new_review = Review(content=review_text, user_id=current_user.id, blogpost_id=blogpost_id)
+    db.session.add(new_review)
+    db.session.commit()
+
+    return jsonify({"message": "Review added successfully!", "review": ReviewSchema().dump(new_review)}), 201
+
 
 
 @routes.route('/<path:actual_path>', methods=['OPTIONS'])

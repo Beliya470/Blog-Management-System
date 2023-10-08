@@ -21,16 +21,19 @@ const Dashboard = () => {
     
     const fetchBlogPosts = async () => {
         try {
-            const data = await apiService.getBlogPosts();
+            const data = await apiService.getBlogPosts();  // Make sure this function name is correct
             setBlogPosts(data);
         } catch (error) {
             console.error("Failed to fetch blog posts:", error);
         }
     };
+    
 
     
     useEffect(() => {
         fetchBlogPosts();
+        setSuccessMessage("Blog post created successfully!");
+
     }, []);    
 
     useEffect(() => {
@@ -44,13 +47,14 @@ const Dashboard = () => {
     }, [blogPosts]);
 
     const handlePostCreate = async () => {
+        
         const formData = new FormData();
-        
-        formData.append('title', title.toString());
-        formData.append('content', content.toString());
+        formData.append('title', title);
+        formData.append('content', content);
+        if (image) {
+            formData.append('image', image);
+            }
 
-        
-        formData.append('image', image);
     
         for (var pair of formData.entries()) {
             console.log(pair[0] + ', ' + pair[1]);
@@ -58,7 +62,10 @@ const Dashboard = () => {
 
         try {
             const response = await apiService.createBlogPost(title, content, image);
+
             // const response = await apiService.createBlogPost({ title, content, image });
+
+            
 
             console.log("Newly created blog post:", response.blogPost);
             if (response.success) {
@@ -169,7 +176,8 @@ const Dashboard = () => {
                             {post.reviews && post.reviews.map(review => (
                             
                                 <div key={review.id} className="review-item">
-                                    <p>{review.text}</p>
+                                    <p>{review?.text || ''}</p>
+                                    
                                 </div>
                             ))}
                         </div>

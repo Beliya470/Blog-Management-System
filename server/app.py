@@ -1,4 +1,5 @@
 from flask import Flask, redirect, url_for
+from flask_login import LoginManager  # <-- Add this line
 import subprocess
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -7,7 +8,10 @@ from extensions import db, ma, login_manager, init_db
 from routes import routes as blueprint_routes
 from models import User
 
+
 app = Flask(__name__)
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 # Flask Configuration
 app.config['SECRET_KEY'] = 'mysecret'

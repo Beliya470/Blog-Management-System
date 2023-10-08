@@ -10,32 +10,6 @@ const encodeFormData = (data) => {
     .join('&');
 }
 
-// Blog API
-export const getBlogPosts = async () => {
-  try {
-    const response = await fetch(`${baseURL}/routes/blogposts`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    return response.json();
-  } catch (error) {
-    console.error("Error fetching blog posts:", error);
-    throw error;
-  }
-};
-
-export const getBlogPost = async (blogId) => {
-  try {
-    const response = await fetch(`${baseURL}/routes/blogposts/${blogId}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    return response.json();
-  } catch (error) {
-    console.error("Error fetching blog post:", error);
-    throw error;
-  }
-};
 
 export const modifyBlogPost = async (blogId, title, content) => {
   try {
@@ -132,23 +106,24 @@ export const logout = async () => {
 
 export const createBlogPost = async (title, content, image) => {
   try {
-    const data = {
-      title,
-      content,
-      image
-    };
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    if (image) {
+        formData.append('image', image);
+    }
 
     const response = await fetch(`${baseURL}/routes/blogposts`, {
       method: 'POST',
       headers: {
-        ...defaultHeaders(),
-        'Content-Type': 'application/json'
+          ...defaultHeaders()
       },
-      body: JSON.stringify(data)
-    });
+      body: formData
+  });
+  
 
     if (!response.ok) {
-      throw new Error(`Failed to create blog post (HTTP ${response.status})`);
+        throw new Error(`Failed to create blog post (HTTP ${response.status})`);
     }
 
     return response.json();
@@ -161,7 +136,8 @@ export const createBlogPost = async (title, content, image) => {
 
 
 
-export const getUserBlogPosts = async () => {
+
+export const getBlogPosts = async () => {
   try {
     const response = await fetch(`${baseURL}/routes/blogposts`, {
       headers: defaultHeaders()
