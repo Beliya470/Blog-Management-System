@@ -1,0 +1,181 @@
+[2023-10-07 17:23:44 +0300] [179116] [INFO] Starting gunicorn 20.1.0
+[2023-10-07 17:23:44 +0300] [179116] [INFO] Listening at: http://0.0.0.0:8000 (179116)
+[2023-10-07 17:23:44 +0300] [179116] [INFO] Using worker: sync
+[2023-10-07 17:23:44 +0300] [179117] [INFO] Booting worker with pid: 179117
+[2023-10-07 17:23:44 +0300] [179117] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/beliya_user/Blog-Management-System/server/app.py", line 1, in <module>
+    from flask import Flask
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/__init__.py", line 5, in <module>
+    from . import json as json
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/json/__init__.py", line 6, in <module>
+    from ..globals import current_app
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/globals.py", line 25, in <module>
+    app_ctx: AppContext = LocalProxy(  # type: ignore[assignment]
+TypeError: LocalProxy.__init__() got an unexpected keyword argument 'unbound_message'
+[2023-10-07 17:23:44 +0300] [179117] [INFO] Worker exiting (pid: 179117)
+[2023-10-07 17:23:44 +0300] [179118] [INFO] Booting worker with pid: 179118
+[2023-10-07 17:23:44 +0300] [179118] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/beliya_user/Blog-Management-System/server/app.py", line 1, in <module>
+    from flask import Flask
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/__init__.py", line 5, in <module>
+    from . import json as json
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/json/__init__.py", line 6, in <module>
+    from ..globals import current_app
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/globals.py", line 25, in <module>
+    app_ctx: AppContext = LocalProxy(  # type: ignore[assignment]
+TypeError: LocalProxy.__init__() got an unexpected keyword argument 'unbound_message'
+[2023-10-07 17:23:44 +0300] [179118] [INFO] Worker exiting (pid: 179118)
+[2023-10-07 17:31:01 +0300] [179374] [INFO] Starting gunicorn 20.1.0
+[2023-10-07 17:31:01 +0300] [179374] [INFO] Listening at: http://0.0.0.0:8000 (179374)
+[2023-10-07 17:31:01 +0300] [179374] [INFO] Using worker: sync
+[2023-10-07 17:31:01 +0300] [179375] [INFO] Booting worker with pid: 179375
+[2023-10-07 17:31:01 +0300] [179376] [INFO] Booting worker with pid: 179376
+[2023-10-07 17:31:01 +0300] [179375] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/beliya_user/Blog-Management-System/server/app.py", line 52, in <module>
+    from flask import Flask, redirect, url_for
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/__init__.py", line 5, in <module>
+    from . import json as json
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/json/__init__.py", line 6, in <module>
+    from ..globals import current_app
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/globals.py", line 25, in <module>
+    app_ctx: AppContext = LocalProxy(  # type: ignore[assignment]
+TypeError: LocalProxy.__init__() got an unexpected keyword argument 'unbound_message'
+[2023-10-07 17:31:01 +0300] [179375] [INFO] Worker exiting (pid: 179375)
+[2023-10-07 17:31:01 +0300] [179377] [INFO] Booting worker with pid: 179377
+[2023-10-07 17:31:01 +0300] [179376] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/beliya_user/Blog-Management-System/server/app.py", line 52, in <module>
+    from flask import Flask, redirect, url_for
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/__init__.py", line 5, in <module>
+    from . import json as json
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/json/__init__.py", line 6, in <module>
+    from ..globals import current_app
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/globals.py", line 25, in <module>
+    app_ctx: AppContext = LocalProxy(  # type: ignore[assignment]
+TypeError: LocalProxy.__init__() got an unexpected keyword argument 'unbound_message'
+[2023-10-07 17:31:01 +0300] [179376] [INFO] Worker exiting (pid: 179376)
+[2023-10-07 17:31:01 +0300] [179377] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/beliya_user/Blog-Management-System/server/app.py", line 52, in <module>
+    from flask import Flask, redirect, url_for
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/__init__.py", line 5, in <module>
+    from . import json as json
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/json/__init__.py", line 6, in <module>
+    from ..globals import current_app
+  File "/home/beliya_user/.local/lib/python3.10/site-packages/flask/globals.py", line 25, in <module>
+    app_ctx: AppContext = LocalProxy(  # type: ignore[assignment]
+TypeError: LocalProxy.__init__() got an unexpected keyword argument 'unbound_message'
+[2023-10-07 17:31:01 +0300] [179377] [INFO] Worker exiting (pid: 179377)

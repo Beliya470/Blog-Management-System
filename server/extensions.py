@@ -1,7 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
+import marshmallow
 from flask_login import LoginManager
 
 db = SQLAlchemy()
-ma = Marshmallow()
+ma = marshmallow
 login_manager = LoginManager()
+
+def init_db(app):
+    db.init_app(app)

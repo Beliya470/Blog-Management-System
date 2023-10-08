@@ -1,4 +1,4 @@
-const baseURL = "http://localhost:5000/routes";
+const baseURL = "http://localhost:5000";
 
 const defaultHeaders = () => ({
   'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -74,6 +74,8 @@ export const deleteBlogPost = async (blogId) => {
 export const signUp = async (username, password) => {
   try {
     const response = await fetch(`${baseURL}/routes/signup`, {
+
+    // const response = await fetch(`${baseURL}/routes/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encodeFormData({ username, password })
@@ -128,21 +130,27 @@ export const logout = async () => {
 };
 
 
-export const createBlogPost = async (formData) => {
+export const createBlogPost = async (title, content, image) => {
   try {
+    const data = {
+      title,
+      content,
+      image
+    };
+
     const response = await fetch(`${baseURL}/routes/blogposts`, {
       method: 'POST',
-      body: formData,
       headers: {
         ...defaultHeaders(),
-        // Do not explicitly set 'Content-Type' here; 
-        // let the browser set it with the proper boundary for FormData
-      }
-      
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
     });
+
     if (!response.ok) {
       throw new Error(`Failed to create blog post (HTTP ${response.status})`);
     }
+
     return response.json();
   } catch (error) {
     console.error("Error creating blog post:", error);
@@ -171,7 +179,7 @@ export const getUserBlogPosts = async () => {
 // Review API
 export const createReview = async (blogId, reviewText) => {
   try {
-    const response = await fetch(`${baseURL}/blogposts/${blogId}/reviews`, {
+    const response = await fetch(`${baseURL}/routes/blogposts/${blogId}/reviews`, {
       method: 'POST',
       headers: {
         ...defaultHeaders(),
@@ -192,7 +200,7 @@ export const createReview = async (blogId, reviewText) => {
 
 export const getReviews = async (blogId) => {
   try {
-    const response = await fetch(`${baseURL}/blogposts/${blogId}/reviews`, {
+    const response = await fetch(`${baseURL}/routes/blogposts/${blogId}/reviews`, {
       headers: defaultHeaders()
     });
     if (!response.ok) {

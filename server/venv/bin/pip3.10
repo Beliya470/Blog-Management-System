@@ -1,4 +1,4 @@
-#!/home/beliya_user/Blog-Management-System/server/venv/bin/python3
+#!/home/beliya_user/Blog-Management-System/server/venv/bin/python3.10
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -57,7 +57,9 @@ const Dashboard = () => {
         }
 
         try {
-            const response = await apiService.createBlogPost(formData);
+            const response = await apiService.createBlogPost(title, content, image);
+            // const response = await apiService.createBlogPost({ title, content, image });
+
             console.log("Newly created blog post:", response.blogPost);
             if (response.success) {
                 

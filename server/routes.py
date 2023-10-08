@@ -1,6 +1,4 @@
-from flask import Blueprint
-from flask import request, jsonify, make_response, redirect, url_for, render_template
-# from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import Blueprint, request, jsonify, make_response, redirect, url_for, render_template
 from flask_cors import CORS
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_wtf import FlaskForm
@@ -12,13 +10,9 @@ import jwt
 from datetime import datetime, timedelta
 
 routes = Blueprint('routes', __name__)
-# CORS(routes, resources={r"/routes/*": {"origins": "*"}})
 CORS(routes, resources={r"*": {"origins": "http://localhost:3000"}})
-# CORS(app, origins="*", allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"], supports_credentials=True)
 
-# CORS(routes)
-
-SECRET_KEY = 'your_secret_key'  # You should store this securely, not in the code.
+SECRET_KEY = 'your_secret_key'  # Store this securely, not in the code.
 
 def generate_token_for_user(user):
     """ Generate a JWT token for the user """
@@ -36,6 +30,8 @@ def load_user(user_id):
 
 login_manager.login_view = "routes.login"
 
+
+# FlaskForm classes
 class UserForm(FlaskForm):
     username = StringField('Username', [validators.Length(min=4, max=25), validators.DataRequired()])
     password = PasswordField('Password', [validators.DataRequired()])
@@ -48,17 +44,19 @@ class ReviewForm(FlaskForm):
     content = StringField('Content', [validators.DataRequired()])
     blogpost_id = StringField('BlogPost ID', [validators.DataRequired()])
 
-class UserSchema(ma.SQLAlchemyAutoSchema):
+# Marshmallow Schemas (adjusted)
+class UserSchema(ma.Schema):
     class Meta:
-        model = User
+        fields = ("id", "username")
 
-class BlogPostSchema(ma.SQLAlchemyAutoSchema):
+class BlogPostSchema(ma.Schema):
     class Meta:
-        model = BlogPost
+        fields = ("id", "title", "content", "user_id")
 
-class ReviewSchema(ma.SQLAlchemyAutoSchema):
+class ReviewSchema(ma.Schema):
     class Meta:
-        model = Review
+        fields = ("id", "content", "user_id", "blogpost_id")
+
 
 @routes.after_request
 def apply_caching(response):
@@ -81,7 +79,7 @@ def home():
 # def home():
 #     return "Welcome to Blog Management System"
 
-@routes.route('/routes/signup', methods=['POST'])
+@routes.route('/signup', methods=['POST'])
 def signup():
     data = request.form if request.form else request.json
     username = data.get('username')
@@ -93,13 +91,22 @@ def signup():
     user = User.query.filter_by(username=username).first()
     if user:
         return jsonify({'message': 'Username already exists!'}), 400
-    new_user = User(username=username, password=generate_password_hash(password, method='scrypt'))
+    new_user = User(username=username, password=generate_password_hash(password, method='sha256'))
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'User created successfully! Please proceed to login.'}), 201
 
 
-@routes.route('/routes/login', methods=['POST'])
+@routes.route('/login', methods=['OPTIONS'])
+def login_options():
+    response = make_response()
+    response.headers['Access-Control-Allow-Origin'] = '*'  # Or specify the origin you want to allow
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+    response.headers['Access-Control-Allow-Methods'] = 'POST,OPTIONS'
+    return response
+
+
+@routes.route('/login', methods=['POST'])
 def login():
     data = request.get_json(force=True)
     username = data.get('username')
@@ -114,20 +121,20 @@ def login():
 
     return jsonify({'status': 'success', 'message': 'Logged in successfully!', 'token': token}), 200
 
-@routes.route('/routes/dashboard', methods=['GET'])
+@routes.route('/dashboard', methods=['GET'])
 @login_required
 def dashboard():
     user_blogposts = BlogPost.query.filter_by(user_id=current_user.id).all()
     return render_template('dashboard.html', username=current_user.username, blogposts=user_blogposts)
 
-@routes.route('/routes/logout', methods=['POST', 'OPTIONS'])
+@routes.route('/logout', methods=['POST', 'OPTIONS'])
 @login_required
 def logout():
     logout_user()
     return jsonify({'message': 'Logged out successfully!'}), 200
 
 
-@routes.route('/routes/logout', methods=['OPTIONS'])
+@routes.route('/logout', methods=['OPTIONS'])
 def logout_options():
     response = make_response()
     response.headers['Access-Control-Allow-Origin'] = '*'  # Adjust this as per your requirements
@@ -136,7 +143,7 @@ def logout_options():
     return response
 
 # BlogPost Routes
-@routes.route('/routes/blogposts', methods=['GET'])
+@routes.route('/blogposts', methods=['GET'])
 def get_blogposts():
     blogposts = BlogPost.query.all()
     blogposts_data = []
@@ -149,52 +156,52 @@ def get_blogposts():
     return jsonify(blogposts_data), 200
 
 
-@routes.route('/routes/blogposts', methods=['POST'])
+@routes.route('/blogposts', methods=['POST'])
 # @login_required
 def create_blogpost():
-    print(request.form)
-    # Get title and content from form data
-    data = request.json if request.is_json else request.form
-    title = data.get('title')
-    content = data.get('content')
+    try:
+        print(request.form)
+        # Get title and content from form data
+        data = request.json if request.is_json else request.form
+        title = data.get('title')
+        content = data.get('content')
 
-    # title = request.form.get('title')
-    # content = request.form.get('content')
-    image = request.files.get('image')  # Getting the uploaded file. You can process it further if needed.
+        # title = request.form.get('title')
+        # content = request.form.get('content')
+        image = request.files.get('image')  # Getting the uploaded file. You can process it further if needed.
 
-    if not title or not content:
-        return jsonify({'message': 'Title and content are required!'}), 400
+        if not title or not content:
+            return jsonify({'message': 'Title and content are required!'}), 400
 
-    default_user_id = 1  # or fetch the id of a default user from your database
+        default_user_id = 1  # or fetch the id of a default user from your database
 
-    if current_user.is_authenticated:
-        user_id = current_user.id
-    else:
-        user_id = default_user_id
+        if current_user.is_authenticated:
+            user_id = current_user.id
+        else:
+            user_id = default_user_id
 
-    new_blogpost = BlogPost(title=title, content=content, user_id=user_id)
-    
-    db.session.add(new_blogpost)
-    db.session.commit()
+        new_blogpost = BlogPost(title=title, content=content, user_id=user_id)
+        
+        db.session.add(new_blogpost)
+        db.session.commit()
 
-    # Convert the newly created blog post to a dictionary
-    blogpost_data = BlogPostSchema().dump(new_blogpost)
-    # return jsonify({'message': 'BlogPost created successfully!', 'success': True}), 201
-    return jsonify({'message': 'BlogPost created successfully!', 'blogPost': blogpost_data, 'success': True}), 201
+        blogposts = BlogPost.query.all()
+        blogposts_data = []
 
-# return jsonify({'message': 'BlogPost created successfully!'}), 201
+        for post in blogposts:
+            post_data = post.to_dict()
+            post_data['reviews'] = [review.to_dict() for review in post.reviews]
+            blogposts_data.append(post_data)
+
+        # Convert the newly created blog post to a dictionary
+        blogpost_data = BlogPostSchema().dump(new_blogpost)
+        
+        return jsonify({'message': 'BlogPost created successfully!', 'blogPost': blogpost_data, 'success': True}), 201
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
 
 
-
-# @routes.route('/routes/blogposts', methods=['OPTIONS'])
-# def handle_options_request():
-#     response = jsonify()
-#     response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')  # Update the origin as needed
-#     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-#     response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH')
-#     return response, 200
-
-@routes.route('/routes/blogposts/<int:blogpost_id>', methods=['GET'])
+@routes.route('/blogposts/<int:blogpost_id>', methods=['GET'])
 def get_single_blogpost(blogpost_id):
     blogpost = BlogPost.query.get(blogpost_id)
     if blogpost:
@@ -202,8 +209,8 @@ def get_single_blogpost(blogpost_id):
     else:
         return jsonify({"message": "BlogPost not found!"}), 404
 
-@routes.route('/routes/blogposts/<int:blogpost_id>', methods=['PATCH'])
-@login_required
+@routes.route('/blogposts/<int:blogpost_id>', methods=['PATCH'])
+# @login_required
 def modify_blogpost(blogpost_id):
     form = BlogPostForm()
     if form.validate_on_submit():
@@ -220,7 +227,7 @@ def modify_blogpost(blogpost_id):
 
     return jsonify({'message': 'Invalid Input!'}), 400
 
-@routes.route('/routes/blogposts/<int:blogpost_id>', methods=['DELETE'])
+@routes.route('/blogposts/<int:blogpost_id>', methods=['DELETE'])
 # @login_required
 def delete_blogpost(blogpost_id):
     blogpost = BlogPost.query.get(blogpost_id)
@@ -233,7 +240,7 @@ def delete_blogpost(blogpost_id):
     return jsonify({'message': 'BlogPost deleted successfully!'}), 200
 
 # Review Routes
-@routes.route('/routes/reviews', methods=['POST'])
+@routes.route('/reviews', methods=['POST'])
 @login_required
 def create_review():
     form = ReviewForm()
@@ -249,7 +256,7 @@ def create_review():
 
     return jsonify({'message': 'Invalid Input!'}), 400
 
-@routes.route('/routes/reviews/<int:review_id>', methods=['PATCH'])
+@routes.route('/reviews/<int:review_id>', methods=['PATCH'])
 @login_required
 def modify_review(review_id):
     form = ReviewForm()
@@ -266,7 +273,7 @@ def modify_review(review_id):
 
     return jsonify({'message': 'Invalid Input!'}), 400
 
-@routes.route('/routes/reviews/<int:review_id>', methods=['DELETE'])
+@routes.route('/reviews/<int:review_id>', methods=['DELETE'])
 @login_required
 def delete_review(review_id):
     review = Review.query.get(review_id)
@@ -277,3 +284,12 @@ def delete_review(review_id):
     db.session.delete(review)
     db.session.commit()
     return jsonify({'message': 'Review deleted successfully!'}), 200
+
+
+@routes.route('/<path:actual_path>', methods=['OPTIONS'])
+def catch_all_options(actual_path):
+    response = make_response()
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+    response.headers['Access-Control-Allow-Methods'] = 'GET,POST,PUT,DELETE,PATCH'
+    return response
