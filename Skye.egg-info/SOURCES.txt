@@ -1,0 +1,8 @@
+LICENSE
+README.md
+setup.py
+Skye.egg-info/PKG-INFO
+Skye.egg-info/SOURCES.txt
+Skye.egg-info/dependency_links.txt
+Skye.egg-info/requires.txt
+Skye.egg-info/top_level.txt
