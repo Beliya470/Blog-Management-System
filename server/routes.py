@@ -67,7 +67,7 @@ def apply_caching(response):
     response.headers["Expires"] = "0"
     response.headers['X-Content-Type-Options'] = 'nosniff'
     if 'Set-Cookie' in response.headers:
-        # response.headers['Set-Cookie'] = response.headers['Set-Cookie'] + '; Secure'
+        
         response.headers["Content-Type"] = "application/json"
 
     return response
@@ -81,7 +81,9 @@ def home():
 
 @routes.route('/signup', methods=['POST'])
 def signup():
-    data = request.form if request.form else request.json
+    data = request.form if request.form else request.get_json()
+
+    # data = request.form if request.form else request.json
     username = data.get('username')
     password = data.get('password')
     if not username or not password:

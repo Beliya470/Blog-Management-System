@@ -48,12 +48,11 @@ export const deleteBlogPost = async (blogId) => {
 export const signUp = async (username, password) => {
   try {
     const response = await fetch(`${baseURL}/routes/signup`, {
-
-    // const response = await fetch(`${baseURL}/routes/signup`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: encodeFormData({ username, password })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
     });
+    
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
