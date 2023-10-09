@@ -37,7 +37,7 @@ Flask-Session==0.5.0
 
 Flask-SQLAlchemy<=2.5.1
 
-Flask-WTF==1.2.1
+Flask-WTF<=1.2.1
 future==0.18.3
 gevent==23.9.1
 greenlet==2.0.2
