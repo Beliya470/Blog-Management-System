@@ -73,9 +73,15 @@ def apply_caching(response):
     return response
     
 
+
 @routes.route('/', methods=['GET'])
 def home():
     return "Welcome to the Blog Management System"
+
+@routes.route('/', defaults={'path': ''})
+@routes.route('/<path:path>')
+def catch_all(path):
+    return serve(path)
 
 
 

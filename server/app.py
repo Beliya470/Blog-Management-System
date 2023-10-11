@@ -42,10 +42,13 @@ login_manager.login_view = 'routes.login'
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists("client/build/" + path):
+    if path == "":
+        return redirect(url_for('routes.home'))  # Redirect to /routes when root is accessed
+    elif os.path.exists("client/build/" + path):
         return send_from_directory('client/build', path)
     else:
         return send_from_directory('client/build', 'index.html')
+
 
 app.register_blueprint(blueprint_routes, url_prefix='/routes')
 
