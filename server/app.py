@@ -39,6 +39,12 @@ def load_user(user_id):
 
 login_manager.login_view = 'routes.login'
 
+
+@app.route('/healthz')
+def health_check():
+    return "OK", 200
+
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
