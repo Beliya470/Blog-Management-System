@@ -1,6 +1,6 @@
 # Apply patch first
-from patch import apply_patch
-apply_patch()
+# from patch import apply_patch
+# apply_patch()
 
 from flask import Flask, redirect, url_for, send_from_directory
 from flask_login import LoginManager

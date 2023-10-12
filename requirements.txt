@@ -37,7 +37,7 @@ Flask-Migrate==4.0.5
 Flask-RESTful==0.3.10
 Flask-Session==0.3.2
 
-Flask-SQLAlchemy<=2.5.1
+Flask-SQLAlchemy==3.1.1
 
 Flask-WTF<=1.2.1
 future==0.18.3
@@ -111,7 +111,7 @@ setuptools>=67.0.0
 six<=1.16.0
 
 
-SQLAlchemy<3.0,>=1.4.25
+SQLAlchemy==2.0.21
 
 
 
