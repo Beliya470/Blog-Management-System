@@ -15,7 +15,9 @@ function HomePage() {
             </div>
 
             <div className="main-content">
-                <img src="/chat6.png" alt="Blogging image" />
+                <img src="/chat6.png" alt="Blogging" />
+
+                {/* <img src="/chat6.png" alt="Blogging" /> */}
 
                 <div className="info">
                     <h2>Unlock the Power of Blogging</h2>
@@ -24,7 +26,7 @@ function HomePage() {
                 </div>
 
                 <div className="blog-intro" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                    <img src="/Image3.webp" alt="Blogging image" style={{ flex: 1, maxWidth: '50%', height: 'auto' }} />
+                    <img src="/Image3.webp" alt="Blogging " style={{ flex: 1, maxWidth: '50%', height: 'auto' }} />
                     <div style={{ flex: 2 }}>
                         <h2>Experience an Intuitive Content Journey</h2>
                         <h3>Dive into our Comprehensive Blogging Platform</h3>
@@ -37,19 +39,19 @@ function HomePage() {
 
                     <div className="blog-posts-container" style={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
                         <div className="post">
-                            <img src="/BL1.jpg" alt="Blog post image" />
+                            <img src="/BL1.jpg" alt="Blog post " />
                             <h3>UK removes countervailing tariff on steel bar, rod imports from India</h3>
                             <a href="/login">Read More</a>
                         </div>
 
                         <div className="post">
-                            <img src="/ddd.png" alt="Blog post image" />
+                            <img src="/ddd.png" alt="Blog post " />
                             <h3>Whether you are an industrial hedger, physical market trader or desk trader, we offer two ways of accessing our markets...</h3>
                             <a href="/login">Read More</a>
                         </div>
 
                         <div className="post">
-                            <img src="/eee.png" alt="Blog post image" />
+                            <img src="/eee.png" alt="Blog post " />
                             <h3>Indian supreme court rules to protect sacred hills against UK mine operation Vedanta Resources...</h3>
                             <a href="/login">Read More</a>
                         </div>

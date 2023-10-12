@@ -13,7 +13,7 @@ const Dashboard = () => {
     
     const [reviewTexts, setReviewTexts] = useState({});
 
-    const [reviews, setReviews] = useState([]);
+    // const [reviews, setReviews] = useState([]);
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
     const location = useLocation();
@@ -126,18 +126,18 @@ const Dashboard = () => {
     
     
     
-    const handleLogOut = async () => {
-        try {
-            const response = await apiService.logout();
-            if (response.success) {
-                navigate("/login");  
-            } else {
-                console.error('Failed to logout');
-            }
-        } catch (error) {
-            console.error('Error during logout:', error);
-        }
-    };
+    // const handleLogOut = async () => {
+    //     try {
+    //         const response = await apiService.logout();
+    //         if (response.success) {
+    //             navigate("/login");  
+    //         } else {
+    //             console.error('Failed to logout');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error during logout:', error);
+    //     }
+    // };
      
 
     return (
