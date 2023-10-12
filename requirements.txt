@@ -112,7 +112,7 @@ SQLAlchemy==1.4.25
 
 SQLAlchemy-serializer<=1.4.1
 stack-data<=0.6.2
-systemd-python<=234
+
 tldextract<=3.6.0
 tomli<=2.0.1
 traitlets<=5.9.0
