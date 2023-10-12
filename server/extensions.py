@@ -8,6 +8,7 @@ def _include_sqlalchemy(obj, query_class=None):
     for module in 'engine url Model query session'.split():
         setattr(obj, module, getattr(orm, module))
 
+# Add the method to the SQLAlchemy class
 SQLAlchemy._include_sqlalchemy = _include_sqlalchemy
 
 db = SQLAlchemy()
