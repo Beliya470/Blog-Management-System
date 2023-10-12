@@ -36,7 +36,7 @@ Flask-Migrate==4.0.5
 Flask-RESTful==0.3.10
 Flask-Session==0.3.2
 Flask-SQLAlchemy==2.5.1
-Flask-WTF==1.2.1
+Flask-WTF<=1.1.1
 fonttools==4.43.1
 future==0.18.3
 gevent==23.9.1
