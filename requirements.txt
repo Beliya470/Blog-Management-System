@@ -65,8 +65,7 @@ markdown-it-py==2.2.0
 MarkupSafe==1.1.1
 marshmallow==3.19.0
 marshmallow-sqlalchemy==0.28.2
-matplotlib==3.8.0
-matplotlib-inline==0.1.6
+
 mdurl==0.1.2
 more-itertools==8.10.0
 multidict==6.0.4
