@@ -111,7 +111,9 @@ setuptools>=67.0.0
 six<=1.16.0
 
 
-SQLAlchemy<3.0,>=1.4.40
+SQLAlchemy<3.0,>=1.4.25
+
+
 
 SQLAlchemy-serializer<=1.4.1
 stack-data<=0.6.2
