@@ -59,13 +59,13 @@ def serve(path):
 app.register_blueprint(blueprint_routes, url_prefix='/routes')
 
 def run_frontend():
-    frontend_path = "../client/src"  # adjust as per your folder structure
+    frontend_path = "../client/src"  
     return subprocess.Popen(["npm", "start"], cwd=frontend_path)
 
-# This will be triggered when the Flask app starts
+
 with app.app_context():
     db.create_all()
     run_frontend()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))
