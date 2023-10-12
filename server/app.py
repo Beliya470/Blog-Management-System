@@ -38,7 +38,7 @@ def health_check():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if os.path.exists("client/build/" + path):
+    if path != "" and os.path.exists("client/build/" + path):
         return send_from_directory('client/build', path)
     else:
         return send_from_directory('client/build', 'index.html')
