@@ -10,25 +10,18 @@ import os
 
 app = Flask(__name__, static_folder='client/build')
 
-# Increase the Maximum Request Header Size
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-
-# Initialize LoginManager
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-# Flask Configuration
 app.config['SECRET_KEY'] = 'mysecret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = True
 
-# Initialize Extensions using init_db function
 init_db(app)
-
-# Other Initializations
-CORS(app, origins=["https://take21.onrender.com"])
+CORS(app, origins=["http://localhost:3000"])
 Session(app)
 migrate = Migrate(app, db)
 
