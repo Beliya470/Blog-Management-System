@@ -1,2 +1,2 @@
 pip install uwsgi
-uwsgi --http :5000 --wsgi-file app.py --callable app
+uwsgi --http :10000 --wsgi-file app.py --callable app

@@ -1,4 +1,4 @@
-const baseURL = "http://localhost:5000";
+const baseURL = "http://localhost:10000";
 
 const defaultHeaders = () => ({
   'Authorization': `Bearer ${localStorage.getItem('token')}`
