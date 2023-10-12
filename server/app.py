@@ -33,7 +33,7 @@ app.config['SESSION_PERMANENT'] = True
 init_db(app)
 
 # Other Initializations
-CORS(app, origins=["http://localhost:3000"])
+CORS(app)
 Session(app)
 migrate = Migrate(app, db)
 
