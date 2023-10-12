@@ -61,7 +61,7 @@ lazr.restfulclient==0.14.4
 lazr.uri==1.0.6
 Mako==1.2.4
 Markdown==2.2.0
-markdown-it-py==3.0.0
+markdown-it-py==2.2.0
 MarkupSafe==1.1.1
 marshmallow==3.20.1
 marshmallow-sqlalchemy==0.28.2
