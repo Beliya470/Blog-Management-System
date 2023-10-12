@@ -8,7 +8,7 @@ from routes import routes as blueprint_routes
 from models import User
 import os
 
-app = Flask(__name__, static_folder='client/build')
+app = Flask(__name__, static_folder='client/public')  # Updated this line
 
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 login_manager = LoginManager()
@@ -38,10 +38,10 @@ def health_check():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists("client/build/" + path):
-        return send_from_directory('client/build', path)
+    if path != "" and os.path.exists(app.static_folder + '/' + path):  # Updated this line
+        return send_from_directory(app.static_folder, path)  # Updated this line
     else:
-        return send_from_directory('client/build', 'index.html')
+        return send_from_directory(app.static_folder, 'index.html')  # Updated this line
 
 app.register_blueprint(blueprint_routes, url_prefix='/routes')
 
