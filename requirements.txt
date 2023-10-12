@@ -47,7 +47,8 @@ gunicorn==21.2.0
 httpie==3.2.2
 httplib2==0.20.2
 idna==3.4
-importlib-metadata==4.6.4
+importlib-metadata>=6.6
+
 iniconfig==2.0.0
 ipdb==0.13.13
 ipython<=8.13.0
@@ -106,9 +107,11 @@ requests-file<=1.5.1
 requests-toolbelt<=1.0.0
 rich<=13.6.0
 SecretStorage<=3.3.1
+setuptools>=67.0.0
 six<=1.16.0
 
-SQLAlchemy==1.4.25
+
+SQLAlchemy<3.0,>=1.4.40
 
 SQLAlchemy-serializer<=1.4.1
 stack-data<=0.6.2
@@ -132,7 +135,7 @@ Werkzeug==1.0.1
 
 wheel<=0.37.1
 WTForms<=3.0.1
-zipp<=1.0.0
+zipp>=3.1.0
 zope.event<=5.0
 zope.interface<=6.1
 
