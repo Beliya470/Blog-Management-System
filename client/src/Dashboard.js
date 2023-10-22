@@ -32,7 +32,7 @@ const Dashboard = () => {
     
     useEffect(() => {
         fetchBlogPosts();
-        setSuccessMessage("Blog post created successfully!");
+        setSuccessMessage("!");
 
     }, []);    
 
@@ -97,7 +97,9 @@ const Dashboard = () => {
 
     const handleCreateReview = async (blogId, reviewText) => {
         try {
-            const response = await apiService.createReview(blogId, { content: reviewText });
+            const response = await apiService.createReview(blogId, reviewText);
+
+            // const response = await apiService.createReview(blogId, { content: reviewText });
     
             if (response.message === "Review added successfully!") {  // <-- This is the new condition
                 setReviewTexts(prev => ({ ...prev, [blogId]: '' }));

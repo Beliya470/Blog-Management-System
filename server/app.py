@@ -1,3 +1,5 @@
+import os
+import subprocess
 from flask import Flask, redirect, url_for, send_from_directory
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -6,31 +8,33 @@ from flask_session import Session
 from extensions import db, ma, login_manager, init_db
 from routes import routes as blueprint_routes
 from models import User
-import os
-import subprocess
+from dotenv import load_dotenv
+
+# Load Environment Variables
+load_dotenv()
 
 app = Flask(__name__, static_folder='client/build')
 
-# Increase the Maximum Request Header Size
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Set to 16 MB or adjust as needed
-
-# Initialize LoginManager
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-# Flask Configuration
-app.config['SECRET_KEY'] = 'mysecret'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+# Configuration from Environment Variables
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'mysecret')  # It's better to have the secret key in the .env file
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'postgres://mydbuser:VJHIlImxAJWNqdTEWp8b6CjhSt5R4eeQ@dpg-ckmj8trj89us73djks30-a.oregon-postgres.render.com/myprojectdb_5gp1')  
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI', 'postgresql://mydbuser:VJHIlImxAJWNqdTEWp8b6CjhSt5R4eeQ@dpg-ckmj8trj89us73djks30-a.oregon-postgres.render.com/myprojectdb_5gp1')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = True
 
-# Initialize Extensions using init_db function
+# Initialize Extensions
 init_db(app)
 
-# Other Initializations
+# Setup Login Manager
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+# CORS and Session Initialization
 CORS(app, origins=["http://localhost:3000"])
 Session(app)
+
+# Flask-Migrate Initialization
 migrate = Migrate(app, db)
 
 @login_manager.user_loader
@@ -49,7 +53,7 @@ def health_check():
 @app.route('/<path:path>')
 def serve(path):
     if path == "":
-        return redirect(url_for('routes.home'))  # Redirect to /routes when root is accessed
+        return redirect(url_for('routes.home'))
     elif os.path.exists("client/build/" + path):
         return send_from_directory('client/build', path)
     else:
@@ -59,10 +63,10 @@ def serve(path):
 app.register_blueprint(blueprint_routes, url_prefix='/routes')
 
 def run_frontend():
-    frontend_path = "../client/src"  # adjust as per your folder structure
+    frontend_path = "../client/src"  # Path relative to the server directory; adjust if necessary
     return subprocess.Popen(["npm", "start"], cwd=frontend_path)
 
-# This will be triggered when the Flask app starts
+# Create all database tables and run the frontend development server
 with app.app_context():
     db.create_all()
     run_frontend()
