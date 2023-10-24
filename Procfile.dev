@@ -1,0 +1,2 @@
+web: cd server && gunicorn -b :8000 app:app
+frontend: cd client && npm start

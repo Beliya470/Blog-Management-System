@@ -42,8 +42,7 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
-# CORS and Session Initialization
-# CORS(app, origins=["http://localhost:3000"])
+
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 Session(app)
 
