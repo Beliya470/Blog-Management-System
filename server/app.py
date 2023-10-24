@@ -28,7 +28,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mysecret')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SESSION_PERMANENT'] = True
+app.config['SESSION_PERMANENT'] = False
 
 # Initialize Extensions
 init_db(app)
