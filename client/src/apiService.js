@@ -16,13 +16,16 @@ const defaultHeaders = () => ({
 
 export const modifyBlogPost = async (blogId, title, content) => {
   try {
-    const response = await fetch(`${baseURL}/routes/blogposts/${blogId}`, {
+    const response = await fetch(`${baseURL}/blogposts/${blogId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', ...defaultHeaders() },
       body: JSON.stringify({ title, content })
     });
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      const errorMessage = await response.text();
+      throw new Error(`HTTP error! Status: ${response.status}. Message: ${errorMessage}`);
+
+      // throw new Error(`HTTP error! Status: ${response.status}`);
     }
     return response.json();
   } catch (error) {
@@ -33,7 +36,7 @@ export const modifyBlogPost = async (blogId, title, content) => {
 
 export const deleteBlogPost = async (blogId) => {
   try {
-    const response = await fetch(`${baseURL}/routes/blogposts/${blogId}`, {
+    const response = await fetch(`${baseURL}/blogposts/${blogId}`, {
       method: 'DELETE',
       headers: defaultHeaders()
     });
@@ -50,7 +53,7 @@ export const deleteBlogPost = async (blogId) => {
 // Auth API
 export const signUp = async (username, password) => {
   try {
-    const response = await fetch(`${baseURL}/routes/signup`, {
+    const response = await fetch(`${baseURL}/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -68,7 +71,7 @@ export const signUp = async (username, password) => {
 
 export const login = async (username, password) => {
   try {
-    const response = await fetch(`${baseURL}/routes/login`, {
+    const response = await fetch(`${baseURL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -85,7 +88,7 @@ export const login = async (username, password) => {
 
 export const logout = async () => {
   try {
-    const response = await fetch(`${baseURL}/routes/logout`, { 
+    const response = await fetch(`${baseURL}/logout`, { 
       method: 'POST', 
       headers: defaultHeaders() 
     });
@@ -115,7 +118,7 @@ export const createBlogPost = async (title, content, image) => {
         formData.append('image', image);
     }
 
-    const response = await fetch(`${baseURL}/routes/blogposts`, {
+    const response = await fetch(`${baseURL}/blogposts`, {
       method: 'POST',
       headers: {
           ...defaultHeaders()
@@ -141,7 +144,7 @@ export const createBlogPost = async (title, content, image) => {
 
 export const getBlogPosts = async () => {
   try {
-    const response = await fetch(`${baseURL}/routes/blogposts`, {
+    const response = await fetch(`${baseURL}/blogposts`, {
       headers: defaultHeaders()
     });
     if (!response.ok) {
@@ -157,7 +160,7 @@ export const getBlogPosts = async () => {
 // Review API
 export const createReview = async (blogId, reviewText) => {
   try {
-    const response = await fetch(`${baseURL}/routes/blogposts/${blogId}/reviews`, {
+    const response = await fetch(`${baseURL}/blogposts/${blogId}/reviews`, {
       method: 'POST',
       headers: {
         ...defaultHeaders(),
@@ -180,7 +183,7 @@ export const createReview = async (blogId, reviewText) => {
 
 export const getReviews = async (blogId) => {
   try {
-    const response = await fetch(`${baseURL}/routes/blogposts/${blogId}/reviews`, {
+    const response = await fetch(`${baseURL}/blogposts/${blogId}/reviews`, {
       headers: defaultHeaders()
     });
     if (!response.ok) {
