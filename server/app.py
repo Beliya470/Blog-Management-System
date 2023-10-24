@@ -18,7 +18,8 @@ import sqlalchemy.exc
 # Load Environment Variables
 load_dotenv(dotenv_path=find_dotenv())
 
-app = Flask(__name__, static_folder='client/build')
+# app = Flask(__name__, static_folder='client/build')
+app = Flask(__name__, static_folder='../client/build', template_folder='../client/build')
 
 # Configuration from Environment Variables
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mysecret')
@@ -96,12 +97,10 @@ def health_check():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists("client/build/" + path):
-        return send_from_directory('client/build', path)
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
     else:
-        # Here you can render a 'login.html' or similar if you want
-        # return render_template('login.html')
-        return "Welcome to the Blog Management System!", 200  # Simple message for now
+        return render_template('index.html')
 
 @app.route('/signup', methods=['POST'])
 def signup():
